@@ -26,16 +26,15 @@ Requires nRF Connect SDK (NCS) **v2.6 or later**.
 
 ```sh
 cd firmware
-west build -b <board_target> .
+west build -b xiao_nrf54l15_sense/nrf54l15/cpuapp .
 west flash
 ```
 
-For `<board_target>`, use the vendor's XIAO nRF54L15 board definition if one
-exists. If not, fall back to the Nordic DK target and adapt:
-
-```sh
-west build -b nrf54l15dk/nrf54l15/cpuapp .
-```
+The project ships its own out-of-tree board definition for the **Seeed XIAO
+nRF54L15 Sense** in `firmware/boards/seeed/xiao_nrf54l15_sense/`, so it builds
+even on an SDK that predates the upstream board. On a recent Zephyr/NCS you can
+use the upstream `xiao_nrf54l15/nrf54l15/cpuapp` target instead, or
+`nrf54l15dk/nrf54l15/cpuapp` if you only have a Nordic DK.
 
 See `firmware/README.md` for details, the command protocol, and the data format.
 
@@ -64,6 +63,7 @@ this and shows a clear message instead of breaking.
 firmware/
   CMakeLists.txt
   prj.conf
+  boards/seeed/xiao_nrf54l15_sense/   out-of-tree XIAO nRF54L15 Sense board
   src/
     main.c           NUS peripheral + command/sweep state machine
     radio_sweep.c    RADIO energy-detect (RSSI) sweep + channel→freq map
@@ -78,10 +78,11 @@ web/
 
 ## Design choices & assumptions
 
-- **Board target:** the spec notes the exact Zephyr target depends on the
-  vendor board definition. The build defaults to documentation pointing at
-  `nrf54l15dk/nrf54l15/cpuapp` as a fallback; swap in the XIAO target when
-  available.
+- **Board target:** the project ships an out-of-tree **Seeed XIAO nRF54L15
+  Sense** board definition (`firmware/boards/seeed/xiao_nrf54l15_sense/`,
+  target `xiao_nrf54l15_sense/nrf54l15/cpuapp`), derived from the upstream
+  Zephyr `xiao_nrf54l15` board. The upstream `xiao_nrf54l15/nrf54l15/cpuapp`
+  and `nrf54l15dk/nrf54l15/cpuapp` targets also work.
 - **Energy detection = Option B (sweep-then-stream MVP).** The firmware briefly
   takes the radio from the BLE stack to sweep all 40 channels (~a few ms, well
   within a connection interval), then streams the result. Option A (MPSL

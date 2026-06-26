@@ -11,16 +11,31 @@ extension).
 
 ```sh
 cd firmware
-west build -b <board_target> .
+west build -b xiao_nrf54l15_sense/nrf54l15/cpuapp .
 west flash
 ```
 
 ### Board target
 
-The exact Zephyr board target for a XIAO-form-factor nRF54L15 depends on the
-vendor's board definition. Check the vendor repo (e.g. Seeed's board ports /
-nRF Connect SDK board ports) and use whatever target matches. If no upstream
-board definition exists yet, fall back to the Nordic DK target and adapt:
+This project targets the **Seeed XIAO nRF54L15 Sense**. A self-contained,
+out-of-tree board definition lives in
+[`boards/seeed/xiao_nrf54l15_sense/`](boards/seeed/xiao_nrf54l15_sense/README.md)
+and is picked up automatically (the application directory is added to
+`BOARD_ROOT`), so the build works even on an SDK that predates the upstream
+board:
+
+```sh
+west build -b xiao_nrf54l15_sense/nrf54l15/cpuapp .
+```
+
+The XIAO nRF54L15 is also **upstream** in Zephyr as `xiao_nrf54l15`. On a recent
+enough Zephyr/NCS you can use the upstream target instead:
+
+```sh
+west build -b xiao_nrf54l15/nrf54l15/cpuapp .
+```
+
+Either way, if you only have a Nordic DK on hand, the DK target also works:
 
 ```sh
 west build -b nrf54l15dk/nrf54l15/cpuapp .
