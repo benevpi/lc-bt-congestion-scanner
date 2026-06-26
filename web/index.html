@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BLE Spectrum Monitor</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Chart.js + matrix plugin (heatmap) from CDN. No build step. -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-matrix@2.0.1/dist/chartjs-chart-matrix.min.js"></script>
+</head>
+<body>
+  <!-- Shown only when Web Bluetooth is unavailable (iOS Safari, Firefox, …). -->
+  <div id="unsupported" class="unsupported hidden">
+    <h1>BLE Spectrum Monitor</h1>
+    <p>
+      This browser does not support <strong>Web Bluetooth</strong>, which this
+      app needs to talk to the board.
+    </p>
+    <p>
+      Please open this page in a Chromium-based browser
+      (Chrome or Edge) on desktop or Android. Web Bluetooth is not available on
+      iOS Safari or Firefox.
+    </p>
+  </div>
+
+  <div id="app" class="app">
+    <!-- 1. Header bar -->
+    <header class="header">
+      <h1 class="title">BLE Spectrum Monitor</h1>
+      <div class="controls">
+        <span id="status" class="pill pill-off">Disconnected</span>
+        <button id="connectBtn" type="button">Connect</button>
+        <button id="startStopBtn" type="button" disabled>Start</button>
+        <label class="interval">
+          Interval (ms)
+          <input id="intervalInput" type="number" min="100" step="100" value="1000" />
+        </label>
+        <button id="applyIntervalBtn" type="button" disabled>Apply</button>
+      </div>
+    </header>
+
+    <!-- 2. Live spectrum chart -->
+    <section class="card">
+      <h2>Live spectrum</h2>
+      <div class="chart-wrap">
+        <canvas id="spectrumChart"></canvas>
+      </div>
+    </section>
+
+    <!-- 3. History heatmap -->
+    <section class="card">
+      <h2>History heatmap <span class="muted">(last 5 minutes)</span></h2>
+      <div class="chart-wrap heatmap-wrap">
+        <canvas id="heatmapChart"></canvas>
+      </div>
+    </section>
+
+    <!-- 4. Summary panel -->
+    <section class="card summary">
+      <h2>Summary</h2>
+      <div class="metrics">
+        <div class="metric">
+          <span class="metric-label">Avg RSSI</span>
+          <span id="avgRssi" class="metric-value">—</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Busy channels (&gt; <span id="thresholdLabel">-70</span> dBm)</span>
+          <span id="busyCount" class="metric-value">—</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Sweep rate</span>
+          <span id="sweepRate" class="metric-value">—</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Sweeps buffered</span>
+          <span id="bufferCount" class="metric-value">0</span>
+        </div>
+      </div>
+      <button id="downloadCsvBtn" type="button" disabled>Download CSV</button>
+    </section>
+
+    <footer class="footer muted">
+      Busy threshold -70 dBm · RSSI axis fixed -100 to -30 dBm · advertising
+      channels 37/38/39 highlighted.
+    </footer>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

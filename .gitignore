@@ -1,0 +1,8 @@
+# Zephyr / nRF Connect SDK build output
+firmware/build/
+build/
+
+# Editor / OS cruft
+.DS_Store
+*.swp
+.vscode/
